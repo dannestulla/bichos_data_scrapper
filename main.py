@@ -3,18 +3,15 @@ import os
 import subprocess
 import boto3
 
-import requests
-
-from convert_pictures import get_images_path, prepare_image
+from convert_pictures import get_images_path
 from credentials import bucket_name
 from pictures_model import PostImages, post_pictures_serializer, Images
 from botocore.exceptions import NoCredentialsError
 
+
 def main():
     # run_instaloader()
     images_paths = get_images_path()
-    # prepared_image = prepare_image(images_paths)
-    # treated_data = treat_data(prepared_image)
     upload_to_s3(images_paths)
 
 
@@ -44,7 +41,7 @@ def treat_data(images):
 
 def upload_to_s3(list_images):
     file_name = list_images[0].split('\\')[7]
-    s3_file_name = 'meubichotasalvocanoas'+'\\'+file_name
+    s3_file_name = 'meubichotasalvocanoas' + '\\' + file_name
     s3_client = boto3.client('s3')
     try:
         s3_client.upload_file(list_images[0], bucket_name, s3_file_name)
