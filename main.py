@@ -2,22 +2,23 @@ import json
 import os
 import subprocess
 import boto3
-
-from convert_pictures import get_images_path
-from credentials import bucket_name
+from botocore.config import Config
+from credentials import bucket_name, r2_endpoint, access_key, secret_key
 from pictures_model import PostImages, post_pictures_serializer, Images
 from botocore.exceptions import NoCredentialsError
 
 
 def main():
-    # run_instaloader()
-    images_paths = get_images_path()
-    upload_to_s3(images_paths)
+    pages = ['meubichotasalvocanoas']
+    #run_instaloader(pages)
+    folder_path = 'C:\\Users\\dannn\\IdeaProjects\\BichosResgate\\bichos_data_scrapper\\' + pages[0]
+    images_paths = get_images_path(pages, folder_path)
+    upload_to_s3(images_paths, pages)
 
 
-def run_instaloader():
+def run_instaloader(pages):
     # fast-update just downloads new pics
-    comando = 'instaloader --fast-update profile meubichotasalvocanoas'
+    comando = 'instaloader --fast-update --filename-pattern="{date_utc:%Y-%m-%d}" ' + pages[0]
 
     current_dir = os.getcwd()
     parent_dir = os.path.dirname(current_dir)
@@ -29,26 +30,40 @@ def run_instaloader():
         print("Erro ao executar comando!")
 
 
-def treat_data(images):
-    images_list = []
-    for image in images:
-        images_list.append(Images(image))
+def get_images_path(pages, path):
+    images_path = []
+    for file in os.listdir(path):
+        if file.endswith(('.jpeg', '.jpg', '.png', '.gif', '.bmp')):
+            full_path = os.path.join(path, file)
+            images_path.append(full_path)
 
-    post_pictures = PostImages(page='meubichotasalvocanoas', images=images_list)
-    json_data = json.dumps(post_pictures, default=post_pictures_serializer, indent=4)
-    return json_data
+    return images_path
 
 
-def upload_to_s3(list_images):
-    file_name = list_images[0].split('\\')[7]
-    s3_file_name = 'meubichotasalvocanoas' + '\\' + file_name
-    s3_client = boto3.client('s3')
-    try:
-        s3_client.upload_file(list_images[0], bucket_name, s3_file_name)
-    except NoCredentialsError:
-        print("Credenciais não disponíveis")
-        return False
+def upload_to_s3(list_images, pages):
+    count = 0
+    s3_client = boto3.client('s3',
+                             endpoint_url=r2_endpoint,
+                             aws_access_key_id=access_key,
+                             aws_secret_access_key=secret_key,
+                             config=Config(signature_version='s3v4'),
+                             region_name='auto'
+                             )
+    while count < 1:
+        file_name = list_images[count].split('\\')[7]
+        s3_file_name = pages[0] + '/' + file_name
 
+        try:
+            s3_client.upload_file(list_images[count], bucket_name, s3_file_name)
+        except NoCredentialsError:
+            print("Credenciais não disponíveis")
+            return False
+        count = count + 1
+    prefix = '/gohan-bichos-resgate/'+pages[0]+'/'
+    response = s3_client.list_objects_v2(Bucket='bichos-central', Prefix='gohan-bichos-resgate/')
+    with open('files_names.txt', 'w') as files_names:
+        files_names.write(response)
+        s3_client.upload_file(files_names, 'bichos-central', 'files_names.txt')
 
 if __name__ == "__main__":
     main()
