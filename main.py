@@ -8,18 +8,26 @@ from botocore.exceptions import NoCredentialsError
 
 from downloaded_files_csv import read_csv_file, write_files_downloaded_to_csv
 
+pages = [
+    'animaisresgatadosmathias',
+    'acheseupetrs',
+    'acheseudogulbra',
+    'caesresgatadoscanoas',
+    'meubichotasalvocanoas',
+    'petresgatado_canoas',
+    'onlycats.canoas',
+    'dogs_da_acucena',
+    'petsperdidosemcanoas',
+    'protetorcrismoraes',
+    'resgatadoagoracanoas',
+    'resgatados.pasqualini',
+    'resgatadosnazario409',
+    'tosalvo.pet'
+]
+
 
 def main():
-    pages = [
-        'meubichotasalvocanoas',
-        'acheseupetrs',
-        'acheseudogulbra'
-        'petresgatado_canoas',
-        'animaisresgatadosmathias',
-        'caesresgatadoscanoas',
-        'onlycats.canoas'
-    ]
-    #run_instaloader(pages)
+    run_instaloader(pages)
     folder_paths = create_folder_paths(pages)
     check_if_folders_exist(folder_paths)
     s3_client = create_boto_client()
@@ -38,7 +46,7 @@ def main():
 def run_instaloader(pages):
     # fast-update just downloads new pics
     for page in pages:
-        comando = 'instaloader --fast-update --post-filter="date_utc >= datetime(2024, 5, 10)" ' + page
+        comando = 'instaloader --fast-update --no-videos --no-metadata --no-profile-pic --post-filter="date_utc >= datetime(2024, 5, 10)" ' + page
         current_dir = os.getcwd()
         parent_dir = os.path.dirname(current_dir)
         run_instaloader_result = subprocess.run(comando, shell=True, text=True, cwd=parent_dir)
@@ -47,10 +55,11 @@ def run_instaloader(pages):
         else:
             print("Erro ao executar comando!")
 
+
 def check_files_just_downloaded(files_paths):
     file_names = []
     for file_name in files_paths:
-        file_names.append(file_name.split("\\")[-2]+"/"+file_name.split("\\")[-1])
+        file_names.append(file_name.split("\\")[-2] + "/" + file_name.split("\\")[-1])
     return file_names
 
 
@@ -67,7 +76,7 @@ def get_files_paths(folder_path):
         if file.endswith(('.jpeg', '.jpg', '.png', '.gif', '.bmp', '.txt')):
             full_path = os.path.join(folder_path, file)
             images_paths.append(full_path)
-    print("Caminho das imagens criados")
+    print(f"Caminho {folder_path} criado")
     return images_paths
 
 
@@ -102,7 +111,7 @@ def check_if_folders_exist(folder_paths):
 def upload_file_list_to_s3(page, s3_client):
     file_list_location = "C:\\Users\\dannn\\IdeaProjects\\BichosResgate\\bichos_data_scrapper\\bichos_data_scrapper\\" + page + ".csv"
     s3_client.upload_file(file_list_location, bucket_name, page + ".csv")
-    print("Enviada lista de arquivos baixados")
+    print(f"Enviada lista de arquivos baixados da pagina {page}")
 
 
 if __name__ == "__main__":
