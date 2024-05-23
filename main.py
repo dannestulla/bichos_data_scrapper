@@ -9,20 +9,37 @@ from botocore.exceptions import NoCredentialsError
 from downloaded_files_csv import read_csv_file, write_files_downloaded_to_csv
 
 pages = [
-    'animaisresgatadosmathias',
-    'acheseupetrs',
-    'acheseudogulbra',
-    'caesresgatadoscanoas',
-    'meubichotasalvocanoas',
-    'petresgatado_canoas',
+    #CANOAS
+    "acheseudogulbra",
+    "acheseupetrs",
+    "animaisresgatadosmathias",
+    "caesresgatadoscanoas",
+    "dogs_da_acucena",
+    "meubichotasalvocanoas",
     'onlycats.canoas',
-    'dogs_da_acucena',
-    'petsperdidosemcanoas',
-    'protetorcrismoraes',
-    'resgatadoagoracanoas',
-    'resgatados.pasqualini',
-    'resgatadosnazario409',
-    'tosalvo.pet'
+    "petresgatado_canoas",
+    "resgatadoagoracanoas",
+    "resgatados.pasqualini",
+    "resgatadosnazario409",
+    "tosalvo.pet",
+
+    #PORTO ALEGRE
+    "acheseupetpoa",
+    "adotareencontrarpets",
+    "animais_resgatados_enchentepoa",
+    "animaisresgatadosarandi",
+    "pets_resgatadospoa",
+    "petsperdidospoa",
+    "pontalanimais",
+    "resgatados.centrovida",
+    "resgatados_ipa",
+    "resgatadosdasilhas",
+    "tosalvopetpoa",
+
+    #SAO LEO
+    "aumigos_enchentessl",
+    "enchenters_dogs",
+    "tosalvoanimaisrs",
 ]
 
 
