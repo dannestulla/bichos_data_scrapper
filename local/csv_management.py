@@ -10,12 +10,12 @@ def create_csv_file(file_name, files_list):
     return files_list
 
 
-def read_csv_file(file_name, files_list):
+def read_csv_file(file_name, file_paths):
     files_list = []
     new_file_name = file_name
     try:
         if file_name.endswith(".csv") == False:
-            new_file_name = new_file_name+".csv"
+            new_file_name = new_file_name + ".csv"
         with open(new_file_name, 'r', newline='') as csv_file:
             csv_reader = csv.reader(csv_file)
             for line in csv_reader:
@@ -37,3 +37,4 @@ def write_files_downloaded_to_csv(files_just_uploaded, page):
         for file in current_file_data:
             csv_writter.writerow([file])
     print(f"Arquivo {page}.csv gravado")
+

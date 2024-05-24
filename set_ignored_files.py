@@ -1,15 +1,15 @@
-import os
-
 import boto3
-import pandas as pd
 from botocore.config import Config
-from datetime import datetime
 
-from credentials import r2_endpoint, access_key, secret_key, bucket_name
+from model.credentials import r2_endpoint, access_key, secret_key, bucket_name, folder_path
 
 
-def ignored_files():
-    file_list_location = "C:\\Users\\dannn\\IdeaProjects\\BichosResgate\\bichos_data_scrapper\\" + "ignored_files" + ".csv"
+def set_ignored_files():
+    """
+    Creates a list of ignored files that are set manually using the client.
+    This .csv is then sent to the client, so it will ignore files written in it
+    """
+    file_list_location = folder_path + "ignored_files" + ".csv"
 
     s3_client = boto3.client('s3',
                  endpoint_url=r2_endpoint,
@@ -22,4 +22,4 @@ def ignored_files():
 
 
 if __name__ == "__main__":
-    ignored_files()
+    set_ignored_files()

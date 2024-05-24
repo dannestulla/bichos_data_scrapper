@@ -5,12 +5,17 @@ import pandas as pd
 from botocore.config import Config
 from datetime import datetime
 
-from credentials import r2_endpoint, access_key, secret_key, bucket_name
+from model.credentials import r2_endpoint, access_key, secret_key, bucket_name, folder_path
 
 
 def combine_csv_filenames():
+    """
+    Combines all pages contents that are in .csv files into a single .csv.
+    Then sorts the by date and sends to be consumed by frontend
+    """
+
     # Definir o diretório atual
-    current_directory = 'C:\\Users\\dannn\\IdeaProjects\\BichosResgate\\bichos_data_scrapper\\bichos_data_scrapper'
+    current_directory = folder_path+'folders_content_csv'
 
     # Inicializar uma lista para armazenar os DataFrames
     all_data = []
@@ -54,7 +59,7 @@ def combine_csv_filenames():
 
     print(f"Todos os dados foram combinados em {output_filename}")
 
-    file_list_location = "C:\\Users\\dannn\\IdeaProjects\\BichosResgate\\bichos_data_scrapper\\" + "combined_pages_data" + ".csv"
+    file_list_location = folder_path + "combined_pages_data" + ".csv"
 
     s3_client = boto3.client('s3',
                  endpoint_url=r2_endpoint,
