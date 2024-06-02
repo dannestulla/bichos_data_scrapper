@@ -12,6 +12,8 @@ pages = [
     "resgatados.pasqualini",
     "resgatadosnazario409",
     "tosalvo.pet",
+    'patamolhada.oficial',
+    
 
     #PORTO ALEGRE
     "acheseupetpoa",

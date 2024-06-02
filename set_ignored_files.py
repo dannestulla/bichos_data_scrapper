@@ -21,5 +21,6 @@ def set_ignored_files():
     s3_client.upload_file(file_list_location, bucket_name, "ignored_files" + ".csv")
 
 
+
 if __name__ == "__main__":
     set_ignored_files()
